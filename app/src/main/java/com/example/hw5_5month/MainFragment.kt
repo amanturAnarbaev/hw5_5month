@@ -1,6 +1,7 @@
 package com.example.hw5_5month
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,11 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.hw5_5month.databinding.FragmentMainBinding
-
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+@AndroidEntryPoint
 
 class MainFragment : Fragment(), ItemOnClickListener {
 
+
     private lateinit var binding: FragmentMainBinding
+
+    @Inject
+    lateinit var shared: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,10 +31,9 @@ class MainFragment : Fragment(), ItemOnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences = requireContext().getSharedPreferences("setting", Context.MODE_PRIVATE)
-       val isShow : Boolean=preferences.getBoolean("isShow", false)
 
-        if(isShow){
+
+        if(shared.getBoolean("isShow",true)){
             findNavController().navigate(R.id.secondFragment)
         }
 
@@ -45,8 +51,8 @@ class MainFragment : Fragment(), ItemOnClickListener {
     }
 
     override fun itemClick() {
-        val preferences = requireContext().getSharedPreferences("setting", Context.MODE_PRIVATE)
-        preferences.edit().putBoolean("isShow", true).apply()
+
+        changedShared()
         findNavController().navigate(R.id.secondFragment)
     }
 
@@ -59,7 +65,11 @@ class MainFragment : Fragment(), ItemOnClickListener {
     }
 
     override fun btnClick3page() {
-        binding.veiewPager.currentItem=3
+        binding.veiewPager.currentItem = 3
+    }
+
+    fun changedShared() {
+        shared.edit().putBoolean("isShow", false).apply()
     }
 
 }
