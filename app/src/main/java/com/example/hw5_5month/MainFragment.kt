@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.hw5_5month.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 @AndroidEntryPoint
 
 class MainFragment : Fragment(), ItemOnClickListener {
@@ -32,11 +33,6 @@ class MainFragment : Fragment(), ItemOnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        if(shared.getBoolean("isShow",true)){
-            findNavController().navigate(R.id.secondFragment)
-        }
-
         val list = ArrayList<BoardModel>()
         list.add(BoardModel(R.drawable.ic_one, "ONE"))
         list.add(BoardModel(R.drawable.ic_two, "TWO"))
@@ -47,7 +43,9 @@ class MainFragment : Fragment(), ItemOnClickListener {
         val adapter = BoardAdapter(list, this)
         binding.veiewPager.adapter = adapter
 
-
+        if (shared.getBoolean("isShow", false)) {
+            findNavController().navigate(R.id.secondFragment)
+        }
     }
 
     override fun itemClick() {
@@ -69,7 +67,7 @@ class MainFragment : Fragment(), ItemOnClickListener {
     }
 
     fun changedShared() {
-        shared.edit().putBoolean("isShow", false).apply()
+        shared.edit().putBoolean("isShow", true).apply()
     }
 
 }
